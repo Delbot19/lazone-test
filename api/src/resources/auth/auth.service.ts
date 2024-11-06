@@ -26,6 +26,8 @@ class AuthService {
       //Strong password
       const passwordError = validatePasswordStrength(password);
       if (passwordError) {
+        console.log("hello");
+
         throw new Error(passwordError);
       }
 
