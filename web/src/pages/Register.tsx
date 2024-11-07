@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import TextField from "../components/TextField";
 import FButton from "../components/FButton";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 // Définir un type pour les valeurs du formulaire
 interface FormValues {
@@ -47,31 +48,33 @@ const registerSchema = Yup.object().shape({
     .oneOf([Yup.ref("password")], "Les mots de passe doivent correspondre"),
 });
 
-const handleSubmit = async (
-  values: FormValues,
-  actions: FormikHelpers<FormValues>,
-) => {
-  const API_URL = process.env.REACT_APP_API_URL;
-  const payload = {
-    username: `${values.nom} ${values.prenom}`,
-    email: values.email,
-    password: values.password,
-  };
-
-  try {
-    console.log("URL API:", `${API_URL}/register`);
-    const response = await axios.post(`${API_URL}/register`, payload);
-    alert("Inscription réussie");
-    console.log(response.data);
-  } catch (error) {
-    console.error("Erreur lors de l'inscription", error);
-    alert("Une erreur est survenue lors de l'inscription");
-  }
-
-  actions.resetForm();
-};
-
 function Register() {
+  const navigate = useNavigate();
+
+  const handleSubmit = async (
+    values: FormValues,
+    actions: FormikHelpers<FormValues>,
+  ) => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const payload = {
+      username: `${values.nom} ${values.prenom}`,
+      email: values.email,
+      password: values.password,
+    };
+
+    try {
+      console.log("URL API:", `${API_URL}/register`);
+      const response = await axios.post(`${API_URL}/register`, payload);
+      alert("Inscription réussie");
+      console.log(response.data);
+      navigate("/login");
+    } catch (error) {
+      console.error("Erreur lors de l'inscription", error);
+      alert("Une erreur est survenue lors de l'inscription");
+    }
+
+    actions.resetForm();
+  };
   return (
     <Formik
       initialValues={{
@@ -88,7 +91,7 @@ function Register() {
         <Form onSubmit={formik.handleSubmit}>
           <HStack w="100vw" h="100vh">
             <VStack
-              w={{ base: "100%", md: "60%" }}
+              w={{ base: "100%", md: "55%" }}
               h="100vh"
               px={8}
               justifyContent="center"
@@ -123,6 +126,7 @@ function Register() {
                   name="password"
                   type="password"
                   placeholder="- - - - - - - -"
+                  helperText="(8 caractères minimum)"
                 />
                 <TextField
                   label="Répéter le mot de passe"
@@ -136,7 +140,7 @@ function Register() {
               </Box>
             </VStack>
 
-            <Box w={{ base: "0", md: "40%" }} h="100vh">
+            <Box w={{ base: "0", md: "45%" }} h="100vh">
               <Image src="Calque2.png" objectFit="cover" w="100%" h="100%" />
             </Box>
           </HStack>
@@ -147,3 +151,4 @@ function Register() {
 }
 
 export default Register;
+// https://app.screencastify.com/v3/watch/wOsfAJA9m3plRc8MoXFG
