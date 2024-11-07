@@ -23,7 +23,7 @@ function Login() {
 
   const handleSubmit = async (
     values: FormValues,
-    actions: FormikHelpers<FormValues>,
+    actions: FormikHelpers<FormValues>
   ) => {
     const API_URL = process.env.REACT_APP_API_URL;
     const payload = {
@@ -37,9 +37,24 @@ function Login() {
       alert("Connexion réussie");
       console.log(response.data);
       navigate("/error404");
-    } catch (error) {
-      console.error("Erreur lors de la connexion", error);
-      alert("Une erreur est survenue lors de la connexion");
+    } catch (error: any) {
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          alert("Tous les champs sont requis.");
+        } else if (status === 401) {
+          if (data.message === "Invalid email") {
+            alert("Email invalide.");
+          } else if (data.message === "Invalid password.") {
+            alert("Mot de passe incorrect.");
+          }
+        } else if (status === 500) {
+          alert("Erreur du serveur, veuillez réessayer plus tard.");
+        }
+      } else {
+        console.error("Erreur lors de la requête", error);
+        alert("Erreur réseau. Veuillez vérifier votre connexion.");
+      }
     }
 
     actions.resetForm();
