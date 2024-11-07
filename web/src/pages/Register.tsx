@@ -25,22 +25,22 @@ const registerSchema = Yup.object().shape({
     .test(
       "has-uppercase",
       "Le mot de passe doit contenir au moins une lettre majuscule",
-      (value) => /[A-Z]/.test(value || ""),
+      (value) => /[A-Z]/.test(value || "")
     )
     .test(
       "has-lowercase",
       "Le mot de passe doit contenir au moins une lettre minuscule",
-      (value) => /[a-z]/.test(value || ""),
+      (value) => /[a-z]/.test(value || "")
     )
     .test(
       "has-number",
       "Le mot de passe doit contenir au moins un chiffre",
-      (value) => /[0-9]/.test(value || ""),
+      (value) => /[0-9]/.test(value || "")
     )
     .test(
       "has-special-char",
       "Le mot de passe doit contenir au moins un caractère spécial",
-      (value) => /[!@#$%^&*(),.?":{}|<>]/.test(value || ""),
+      (value) => /[!@#$%^&*(),.?":{}|<>]/.test(value || "")
     ),
   repeatpassword: Yup.string()
     .required("Veuillez répéter le mot de passe")
@@ -49,7 +49,7 @@ const registerSchema = Yup.object().shape({
 
 const handleSubmit = async (
   values: FormValues,
-  actions: FormikHelpers<FormValues>,
+  actions: FormikHelpers<FormValues>
 ) => {
   const API_URL = process.env.REACT_APP_API_URL;
   const payload = {
@@ -63,9 +63,19 @@ const handleSubmit = async (
     const response = await axios.post(`${API_URL}/register`, payload);
     alert("Inscription réussie");
     console.log(response.data);
-  } catch (error) {
-    console.error("Erreur lors de l'inscription", error);
-    alert("Une erreur est survenue lors de l'inscription");
+  } catch (error: any) {
+    if (error.response) {
+      const { status, data } = error.response;
+      if (status === 400 || status === 409) {
+        // Affichage du message d'erreur envoyé par le backend
+        alert(`Erreur : ${data.message}`);
+      } else {
+        alert("Erreur lors de l'inscription. Veuillez réessayer plus tard.");
+      }
+    } else {
+      console.error("Erreur lors de la requête", error);
+      alert("Erreur réseau. Veuillez vérifier votre connexion.");
+    }
   }
 
   actions.resetForm();
