@@ -11,7 +11,7 @@ dotenv.config();
 class AuthService {
   public async createUser(
     req: Request,
-    res: Response,
+    res: Response
   ): Promise<Response | void> {
     const userRepository = AppDataSource.getRepository(User);
     try {
@@ -20,20 +20,22 @@ class AuthService {
 
       // Validation basique
       if (!username || !email || !password) {
-        return res.status(400).json({ message: "All fields are required." });
+        return res
+          .status(400)
+          .json({ message: "Tous les champs sont requis." });
       }
 
       //Strong password
       const passwordError = validatePasswordStrength(password);
       if (passwordError) {
-        throw new Error(passwordError);
+        return res.status(400).json({ message: passwordError });
       }
 
       const existingUser = await userRepository.findOne({
         where: { email },
       });
       if (existingUser) {
-        throw new Error("Email already in use.");
+        return res.status(409).json({ message: "Email déjà utilisé." });
       }
       // Créer un nouvel utilisateur via UserService
       const passhash = await hashPassword(password);
@@ -47,14 +49,17 @@ class AuthService {
       // Retourner une réponse de succès
       return res
         .status(201)
-        .json({ message: "User created successfully", user: newUser });
+        .json({ message: "Utilisateur créé avec succès", user: newUser });
     } catch (error: unknown) {
       // En cas d'erreur, on renvoie une réponse avec le code d'erreur 500
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
       return res
         .status(500)
-        .json({ message: "Error creating user", error: errorMessage });
+        .json({
+          message: "Erreur lors de la création de l'utilisateur",
+          error: errorMessage,
+        });
     }
   }
 
