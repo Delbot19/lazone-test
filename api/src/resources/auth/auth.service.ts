@@ -54,12 +54,10 @@ class AuthService {
       // En cas d'erreur, on renvoie une réponse avec le code d'erreur 500
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
-      return res
-        .status(500)
-        .json({
-          message: "Erreur lors de la création de l'utilisateur",
-          error: errorMessage,
-        });
+      return res.status(500).json({
+        message: "Erreur lors de la création de l'utilisateur",
+        error: errorMessage,
+      });
     }
   }
 

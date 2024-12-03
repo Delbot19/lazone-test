@@ -9,7 +9,7 @@ if (rootElement) {
 
   root.render(
     <StrictMode>
-      <App name="World" />
+      <App />
     </StrictMode>,
   );
 }
