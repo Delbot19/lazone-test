@@ -23,9 +23,7 @@
   "dependencies": {
     "formik": "^2.4.6",
     "husky": "^8.0.0",
-    "lint-staged": "^15.2.10",
-    "pino": "^9.4.0",
-    "yup": "^1.4.0"
+    "lint-staged": "^15.2.10"
   },
   "lint-staged": {
     "**/*.{js,ts}": [
