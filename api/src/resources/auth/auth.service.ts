@@ -3,14 +3,11 @@ import { User } from "../../entities/users";
 import { validatePasswordStrength } from "../../utils/validatePassword";
 import { Request, Response } from "express";
 import { hashPassword } from "../../utils/bcrypt.util";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 class AuthService {
   public async createUser(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<Response | void> {
     const userRepository = AppDataSource.getRepository(User);
     try {
@@ -46,21 +43,24 @@ class AuthService {
       await userRepository.save(newUser);
 
       // Retourner une réponse de succès
-      return res
-        .status(201)
-        .json({ message: "Utilisateur créé avec succès", user: newUser });
+      return res.status(201).json({
+        message: "Utilisateur créé avec succès",
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          username: newUser.username,
+        },
+      });
     } catch (error: unknown) {
       // En cas d'erreur, on renvoie une réponse avec le code d'erreur 500
       const errorMessage =
         error instanceof Error ? error.message : "Unknown error";
 
       console.error("Error creating user:", error);
-      return res
-        .status(500)
-        .json({
-          message: "Erreur lors de la création de l'utilisateur",
-          error: errorMessage,
-        });
+      return res.status(500).json({
+        message: "Erreur lors de la création de l'utilisateur",
+        error: errorMessage,
+      });
     }
   }
 }
