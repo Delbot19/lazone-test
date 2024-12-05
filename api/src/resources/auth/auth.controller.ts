@@ -9,6 +9,7 @@ class AuthController implements Controller {
 
   constructor() {
     this.router.post(`${this.path}/register`, this.AuthService.createUser);
+    this.router.post(`${this.path}/login`, this.AuthService.login);
   }
 }
 

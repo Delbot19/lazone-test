@@ -1,4 +1,4 @@
-import { cleanEnv, port } from "envalid";
+import { cleanEnv, port, str } from "envalid";
 
 function validateEnv(): void {
   cleanEnv(process.env, {
@@ -6,6 +6,7 @@ function validateEnv(): void {
     //   choices: ["development", "production"],
     // }),
     PORT: port({ default: 4000 }),
+    JWT_SECRET: str(),
   });
 }
 
