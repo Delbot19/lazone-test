@@ -5,9 +5,6 @@ import { validatePasswordStrength } from "../../utils/validatePassword";
 import { Request, Response } from "express";
 import { hashPassword, isValidPassword } from "../../utils/bcrypt.util";
 import logger from "../../config/logger";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 class AuthService {
   public async createUser(
@@ -48,9 +45,14 @@ class AuthService {
       await userRepository.save(newUser);
 
       // Retourner une réponse de succès
-      return res
-        .status(201)
-        .json({ message: "Utilisateur créé avec succès", user: newUser });
+      return res.status(201).json({
+        message: "Utilisateur créé avec succès",
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          username: newUser.username,
+        },
+      });
     } catch (error: unknown) {
       // En cas d'erreur, on renvoie une réponse avec le code d'erreur 500
       const errorMessage =
